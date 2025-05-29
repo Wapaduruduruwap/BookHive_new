@@ -1,1 +1,91 @@
-<p>profile works!</p>
+<div class="profile-container">
+  <mat-card class="profile-card">
+    <div class="profile-layout">
+      <!-- Левая секция с аватаром -->
+      <div class="avatar-section">
+        <div class="avatar-container">
+          <img [src]="avatarUrl || 'assets/default-avatar.png'" alt="Profile avatar" class="profile-avatar">
+          <div class="avatar-actions" *ngIf="isEditing">
+            <button mat-mini-fab color="primary" class="change-avatar-button">
+              <mat-icon>edit</mat-icon>
+              <input type="file" (change)="onFileSelected($event)" accept="image/*" class="file-input">
+            </button>
+            <button mat-mini-fab color="warn" (click)="removeAvatar()" *ngIf="avatarUrl">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Правая секция с информацией -->
+      <div class="info-section">
+        <div class="header-actions">
+          <button mat-raised-button [color]="isEditing ? 'accent' : 'primary'" (click)="toggleEdit()">
+            {{ isEditing ? 'Сохранить изменения' : 'Редактировать профиль' }}
+          </button>
+        </div>
+
+        <form [formGroup]="profileForm">
+          <div class="personal-info">
+            <mat-form-field appearance="outline">
+              <mat-label>Имя</mat-label>
+              <input matInput formControlName="name" placeholder="Введите ваше имя">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email" placeholder="Введите ваш email" type="email">
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" class="quote-field">
+            <mat-label>Любимая цитата</mat-label>
+            <textarea matInput formControlName="favoriteQuote" placeholder="Введите вашу любимую цитату" rows="2"></textarea>
+          </mat-form-field>
+
+          <div class="books-section">
+            <h3>Прочитанные книги</h3>
+            
+            <div class="book-search" *ngIf="isEditing">
+              <mat-form-field appearance="outline">
+                <mat-label>Поиск книг</mat-label>
+                <input matInput formControlName="bookSearch" placeholder="Введите название книги">
+              </mat-form-field>
+
+              <div class="search-results" *ngIf="searchResults.length > 0">
+                <mat-list>
+                  <mat-list-item *ngFor="let book of searchResults" (click)="addBook(book)">
+                    <span>{{ book.title }} - {{ book.authors.join(', ') }}</span>
+                  </mat-list-item>
+                </mat-list>
+              </div>
+
+              <div formGroupName="customBook" class="custom-book-form">
+                <mat-form-field appearance="outline">
+                  <mat-label>Название книги</mat-label>
+                  <input matInput formControlName="title" placeholder="Введите название">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Автор</mat-label>
+                  <input matInput formControlName="author" placeholder="Введите автора">
+                </mat-form-field>
+
+                <button mat-button color="primary" (click)="addCustomBook()">Добавить книгу</button>
+              </div>
+            </div>
+
+            <mat-list class="books-list">
+              <mat-list-item *ngFor="let book of selectedBooks">
+                <span>{{ book.title }} - {{ book.authors.join(', ') }}</span>
+                <button mat-icon-button color="warn" *ngIf="isEditing" (click)="removeBook(book.id)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </mat-list-item>
+            </mat-list>
+          </div>
+        </form>
+      </div>
+    </div>
+  </mat-card>
+</div>
