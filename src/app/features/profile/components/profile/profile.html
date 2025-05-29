@@ -3,14 +3,31 @@
     <div class="profile-layout">
       <!-- Левая секция с аватаром -->
       <div class="avatar-section">
-        <div class="avatar-container">
-          <img [src]="avatarUrl || 'assets/default-avatar.png'" alt="Profile avatar" class="profile-avatar">
-          <div class="avatar-actions" *ngIf="isEditing">
-            <button mat-mini-fab color="primary" class="change-avatar-button">
-              <mat-icon>edit</mat-icon>
+        <div class="avatar-container" [class.no-avatar]="!avatarUrl">
+          <ng-container *ngIf="!isLoadingAvatar; else loading">
+            <ng-container *ngIf="avatarUrl; else defaultAvatar">
+              <img [src]="avatarUrl" alt="Profile avatar" class="profile-avatar">
+            </ng-container>
+            <ng-template #defaultAvatar>
+              <mat-icon class="default-avatar-icon">account_circle</mat-icon>
+            </ng-template>
+          </ng-container>
+          <ng-template #loading>
+            <div class="loading-overlay">
+              <mat-progress-spinner 
+                mode="indeterminate" 
+                diameter="50"
+                color="primary">
+              </mat-progress-spinner>
+              <span class="loading-text">Загрузка...</span>
+            </div>
+          </ng-template>
+          <div class="avatar-overlay" *ngIf="isEditing && !isLoadingAvatar">
+            <button mat-mini-fab color="primary" class="change-avatar-button" matTooltip="Изменить фото профиля">
+              <mat-icon>add_a_photo</mat-icon>
               <input type="file" (change)="onFileSelected($event)" accept="image/*" class="file-input">
             </button>
-            <button mat-mini-fab color="warn" (click)="removeAvatar()" *ngIf="avatarUrl">
+            <button mat-mini-fab color="warn" (click)="removeAvatar()" *ngIf="avatarUrl" matTooltip="Удалить фото">
               <mat-icon>delete</mat-icon>
             </button>
           </div>
@@ -50,17 +67,21 @@
               <mat-form-field appearance="outline">
                 <mat-label>Поиск книг</mat-label>
                 <input matInput formControlName="bookSearch" placeholder="Введите название книги">
+                <mat-icon matSuffix>search</mat-icon>
               </mat-form-field>
 
               <div class="search-results" *ngIf="searchResults.length > 0">
                 <mat-list>
-                  <mat-list-item *ngFor="let book of searchResults" (click)="addBook(book)">
-                    <span>{{ book.title }} - {{ book.authors.join(', ') }}</span>
+                  <mat-list-item *ngFor="let book of searchResults" (click)="addBook(book)" class="search-result-item">
+                    <mat-icon matListItemIcon>book</mat-icon>
+                    <div matListItemTitle>{{ book.title }}</div>
+                    <div matListItemLine>{{ book.authors.join(', ') }}</div>
                   </mat-list-item>
                 </mat-list>
               </div>
 
               <div formGroupName="customBook" class="custom-book-form">
+                <h4>Добавить книгу вручную</h4>
                 <mat-form-field appearance="outline">
                   <mat-label>Название книги</mat-label>
                   <input matInput formControlName="title" placeholder="Введите название">
@@ -71,16 +92,32 @@
                   <input matInput formControlName="author" placeholder="Введите автора">
                 </mat-form-field>
 
-                <button mat-button color="primary" (click)="addCustomBook()">Добавить книгу</button>
+                <button mat-raised-button color="primary" (click)="addCustomBook()" [disabled]="!profileForm.get('customBook')?.valid">
+                  <mat-icon>add</mat-icon>
+                  Добавить книгу
+                </button>
               </div>
             </div>
 
             <mat-list class="books-list">
-              <mat-list-item *ngFor="let book of selectedBooks">
-                <span>{{ book.title }} - {{ book.authors.join(', ') }}</span>
-                <button mat-icon-button color="warn" *ngIf="isEditing" (click)="removeBook(book.id)">
+              <div class="books-list-header">
+                <h4>Мои книги</h4>
+                <span class="books-count">Всего: {{ selectedBooks.length }}</span>
+              </div>
+              <mat-divider></mat-divider>
+              <mat-list-item *ngFor="let book of selectedBooks" class="book-list-item">
+                <mat-icon matListItemIcon>book</mat-icon>
+                <div matListItemTitle>{{ book.title }}</div>
+                <div matListItemLine>{{ book.authors.join(', ') }}</div>
+                <button mat-icon-button color="warn" *ngIf="isEditing" (click)="removeBook(book.id)" matTooltip="Удалить книгу">
                   <mat-icon>delete</mat-icon>
                 </button>
+              </mat-list-item>
+              <mat-list-item *ngIf="selectedBooks.length === 0">
+                <div class="empty-list-message">
+                  <mat-icon>library_books</mat-icon>
+                  <span>Список книг пуст</span>
+                </div>
               </mat-list-item>
             </mat-list>
           </div>

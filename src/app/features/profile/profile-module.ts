@@ -9,8 +9,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { RouterModule } from '@angular/router';
 
-import { ProfileRoutingModule } from './profile-routing-module';
 import { ProfileComponent } from './components/profile/profile';
 
 @NgModule({
@@ -19,7 +22,7 @@ import { ProfileComponent } from './components/profile/profile';
   ],
   imports: [
     CommonModule,
-    ProfileRoutingModule,
+    RouterModule,
     ReactiveFormsModule,
     HttpClientModule,
     MatCardModule,
@@ -28,7 +31,13 @@ import { ProfileComponent } from './components/profile/profile';
     MatFormFieldModule,
     MatIconModule,
     MatDividerModule,
-    MatListModule
+    MatListModule,
+    MatTooltipModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule
+  ],
+  exports: [
+    ProfileComponent
   ]
 })
 export class ProfileModule { }

@@ -25,14 +25,51 @@
   position: relative;
   width: 250px;
   height: 250px;
+  border-radius: 50%;
+  background-color: #f5f5f5;
+  overflow: hidden;
+  border: 3px solid #3f51b5;
+  transition: all 0.3s ease;
+
+  &.no-avatar {
+    background-color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &:hover .avatar-overlay {
+    opacity: 1;
+  }
 }
 
 .profile-avatar {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #3f51b5;
+}
+
+.default-avatar-icon {
+  font-size: 150px;
+  width: 150px;
+  height: 150px;
+  color: #9e9e9e;
+}
+
+.avatar-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 50%;
 }
 
 .avatar-actions {
@@ -54,6 +91,10 @@
     height: 100%;
     opacity: 0;
     cursor: pointer;
+  }
+
+  &:hover {
+    transform: scale(1.1);
   }
 }
 
@@ -80,14 +121,21 @@
 }
 
 .books-section {
+  margin-top: 2rem;
+
   h3 {
-    margin-bottom: 1rem;
+    color: rgba(0, 0, 0, 0.87);
+    margin-bottom: 1.5rem;
+  }
+
+  h4 {
+    margin: 0;
     color: rgba(0, 0, 0, 0.87);
   }
 }
 
 .book-search {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 
   mat-form-field {
     width: 100%;
@@ -95,39 +143,110 @@
 }
 
 .search-results {
-  max-height: 200px;
+  max-height: 300px;
   overflow-y: auto;
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 4px;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: white;
+}
 
-  mat-list-item {
-    cursor: pointer;
+.search-result-item {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.04);
-    }
+  &:hover {
+    background-color: rgba(63, 81, 181, 0.1);
   }
 }
 
 .custom-book-form {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  align-items: start;
+  background-color: #f5f5f5;
+  padding: 1.5rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+
+  h4 {
+    margin-bottom: 1rem;
+  }
+
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
 
   button {
-    grid-column: span 2;
+    width: 100%;
   }
 }
 
 .books-list {
-  mat-list-item {
-    height: auto;
-    margin-bottom: 0.5rem;
+  background-color: white;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 0;
 
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.04);
+  .books-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+
+    .books-count {
+      color: rgba(0, 0, 0, 0.54);
+      font-size: 14px;
     }
+  }
+
+  .book-list-item {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    mat-icon {
+      color: #3f51b5;
+    }
+  }
+}
+
+.empty-list-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: rgba(0, 0, 0, 0.54);
+  padding: 2rem;
+  width: 100%;
+
+  mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  gap: 1rem;
+
+  .loading-text {
+    color: #3f51b5;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  ::ng-deep .mat-progress-spinner circle {
+    stroke: #3f51b5;
   }
 }
