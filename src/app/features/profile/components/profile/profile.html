@@ -23,11 +23,25 @@
             </div>
           </ng-template>
           <div class="avatar-overlay" *ngIf="isEditing && !isLoadingAvatar">
-            <button mat-mini-fab color="primary" class="change-avatar-button" matTooltip="Изменить фото профиля">
-              <mat-icon>add_a_photo</mat-icon>
-              <input type="file" (change)="onFileSelected($event)" accept="image/*" class="file-input">
-            </button>
-            <button mat-mini-fab color="warn" (click)="removeAvatar()" *ngIf="avatarUrl" matTooltip="Удалить фото">
+            <label class="change-avatar-button" matTooltip="Изменить фото профиля">
+              <button mat-mini-fab color="primary">
+                <mat-icon>add_a_photo</mat-icon>
+              </button>
+              <input 
+                #fileInput
+                type="file" 
+                class="file-input" 
+                (change)="onFileSelected($event)" 
+                accept="image/*"
+                aria-label="Выберите фото профиля">
+            </label>
+            <button 
+              mat-mini-fab 
+              color="warn" 
+              (click)="removeAvatar()" 
+              *ngIf="avatarUrl" 
+              matTooltip="Удалить фото"
+              aria-label="Удалить фото профиля">
               <mat-icon>delete</mat-icon>
             </button>
           </div>
