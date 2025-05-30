@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { BooksService, IBook } from '../../services/books.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-profile',
@@ -16,13 +17,19 @@ export class ProfileComponent implements OnInit {
   public isEditing: boolean = false;
   public searchResults: IBook[] = [];
   public selectedBooks: IBook[] = [];
+  public isLoadingAvatar: boolean = false;
+
+  private readonly maxFileSize = 5 * 1024 * 1024; // 5MB
+  private readonly allowedFileTypes = ['image/jpeg', 'image/png', 'image/gif'];
 
   constructor(
     private readonly _formBuilder: FormBuilder,
-    private readonly _booksService: BooksService
+    private readonly _booksService: BooksService,
+    private readonly _snackBar: MatSnackBar,
+    private readonly _cdr: ChangeDetectorRef
   ) {
     this.profileForm = this._formBuilder.group({
-      name: [{ value: '', disabled: true }],
+      name: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(2)]],
       email: [{ value: '', disabled: true }],
       favoriteQuote: [{ value: '', disabled: true }],
       bookSearch: [''],
@@ -42,6 +49,7 @@ export class ProfileComponent implements OnInit {
       )
       .subscribe(books => {
         this.searchResults = books;
+        this._cdr.markForCheck();
       });
   }
 
@@ -50,26 +58,74 @@ export class ProfileComponent implements OnInit {
     if (this.isEditing) {
       this.profileForm.enable();
     } else {
-      this.profileForm.disable();
       if (this.profileForm.valid) {
         this.onSubmit();
+        this.profileForm.disable();
+      } else {
+        // Если форма невалидна, показываем сообщение и остаемся в режиме редактирования
+        this._snackBar.open('Пожалуйста, заполните обязательные поля', 'OK', {
+          duration: 3000
+        });
+        this.isEditing = true;
       }
     }
   }
 
   public onFileSelected(event: Event): void {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e: ProgressEvent<FileReader>) => {
-        this.avatarUrl = e.target?.result as string;
-      };
-      reader.readAsDataURL(file);
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) {
+      return;
     }
+
+    // Проверка размера файла
+    if (file.size > this.maxFileSize) {
+      this._snackBar.open('Размер файла не должен превышать 5MB', 'Закрыть', {
+        duration: 3000
+      });
+      return;
+    }
+
+    // Проверка типа файла
+    if (!this.allowedFileTypes.includes(file.type)) {
+      this._snackBar.open('Разрешены только изображения в форматах JPEG, PNG или GIF', 'Закрыть', {
+        duration: 3000
+      });
+      return;
+    }
+
+    this.isLoadingAvatar = true;
+    this._cdr.markForCheck();
+
+    const reader = new FileReader();
+    
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      this.avatarUrl = e.target?.result as string;
+      this.isLoadingAvatar = false;
+      this._cdr.markForCheck();
+      this._snackBar.open('Фото профиля успешно обновлено', 'OK', {
+        duration: 2000
+      });
+    };
+
+    reader.onerror = () => {
+      this.isLoadingAvatar = false;
+      this._cdr.markForCheck();
+      this._snackBar.open('Ошибка при загрузке файла', 'Закрыть', {
+        duration: 3000
+      });
+    };
+
+    reader.readAsDataURL(file);
   }
 
   public removeAvatar(): void {
     this.avatarUrl = null;
+    this._cdr.markForCheck();
+    this._snackBar.open('Фото профиля удалено', 'OK', {
+      duration: 2000
+    });
   }
 
   public addBook(book: IBook): void {
