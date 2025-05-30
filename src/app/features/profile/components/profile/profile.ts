@@ -62,8 +62,7 @@ export class ProfileComponent implements OnInit {
         this.onSubmit();
         this.profileForm.disable();
       } else {
-        // Если форма невалидна, показываем сообщение и остаемся в режиме редактирования
-        this._snackBar.open('Пожалуйста, заполните обязательные поля', 'OK', {
+        this._snackBar.open('', '', {
           duration: 3000
         });
         this.isEditing = true;
@@ -79,17 +78,15 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    // Проверка размера файла
     if (file.size > this.maxFileSize) {
-      this._snackBar.open('Размер файла не должен превышать 5MB', 'Закрыть', {
+      this._snackBar.open('', '', {
         duration: 3000
       });
       return;
     }
 
-    // Проверка типа файла
     if (!this.allowedFileTypes.includes(file.type)) {
-      this._snackBar.open('Разрешены только изображения в форматах JPEG, PNG или GIF', 'Закрыть', {
+      this._snackBar.open('', '', {
         duration: 3000
       });
       return;
@@ -104,7 +101,7 @@ export class ProfileComponent implements OnInit {
       this.avatarUrl = e.target?.result as string;
       this.isLoadingAvatar = false;
       this._cdr.markForCheck();
-      this._snackBar.open('Фото профиля успешно обновлено', 'OK', {
+      this._snackBar.open('', '', {
         duration: 2000
       });
     };
@@ -112,7 +109,7 @@ export class ProfileComponent implements OnInit {
     reader.onerror = () => {
       this.isLoadingAvatar = false;
       this._cdr.markForCheck();
-      this._snackBar.open('Ошибка при загрузке файла', 'Закрыть', {
+      this._snackBar.open('', '', {
         duration: 3000
       });
     };
@@ -123,7 +120,7 @@ export class ProfileComponent implements OnInit {
   public removeAvatar(): void {
     this.avatarUrl = null;
     this._cdr.markForCheck();
-    this._snackBar.open('Фото профиля удалено', 'OK', {
+    this._snackBar.open('', '', {
       duration: 2000
     });
   }
@@ -158,6 +155,5 @@ export class ProfileComponent implements OnInit {
       ...this.profileForm.value,
       books: this.selectedBooks
     });
-    // В будущем здесь будет сохранение данных
   }
 }
