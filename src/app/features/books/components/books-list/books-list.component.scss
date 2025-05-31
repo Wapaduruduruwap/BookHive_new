@@ -1,3 +1,68 @@
+// Основной контейнер
 .books-container {
   padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// Сетка для карточек книг
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+// Стили карточки книги
+.book-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+
+  // Обложка книги
+  .book-cover {
+    height: 192px;
+    object-fit: cover;
+    border-radius: 4px 4px 0 0;
+  }
+
+  // Заголовок карточки
+  mat-card-header {
+    margin-bottom: 10px;
+  }
+
+  // Описание книги
+  mat-card-content {
+    flex-grow: 1;
+    
+    p {
+      margin-bottom: 10px;
+      line-height: 1.5;
+      
+      &.truncated {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    }
+  }
+
+  // Кнопки действий
+  mat-card-actions {
+    padding: 8px;
+    display: flex;
+    justify-content: space-between;
+
+    button {
+      mat-icon {
+        margin-right: 4px;
+      }
+    }
+  }
 } 

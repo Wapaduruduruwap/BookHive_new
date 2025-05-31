@@ -1,3 +1,31 @@
 <div class="books-container">
-  <!-- Здесь будет размещен список книг -->
+  <!-- Сетка карточек книг -->
+  <div class="books-grid">
+    <mat-card class="book-card" *ngFor="let book of books">
+      <!-- Обложка книги -->
+      <img mat-card-image [src]="book.thumbnail" [alt]="book.title" class="book-cover">
+      
+      <mat-card-header>
+        <mat-card-title>{{ book.title }}</mat-card-title>
+        <mat-card-subtitle>{{ book.author }}</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Описание с возможностью развернуть/свернуть -->
+        <p [class.truncated]="!book.showFullDescription">
+          {{ book.description }}
+        </p>
+        <button mat-button color="primary" (click)="toggleDescription(book)">
+          {{ book.showFullDescription ? 'Свернуть' : 'Читать далее' }}
+        </button>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-button color="primary" (click)="addToFavorites(book)">
+          <mat-icon>favorite_border</mat-icon>
+          Добавить в избранное
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
 </div> 

@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { BooksListComponent } from './components/books-list/books-list.component';
 
+// Определяем маршруты для модуля книг
 const routes: Routes = [
   {
     path: '',
@@ -14,15 +15,13 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [
-    BooksListComponent
-  ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
     MatCardModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    BooksListComponent // Добавляем компонент в imports вместо declarations
   ]
 })
 export class BooksModule { } 
