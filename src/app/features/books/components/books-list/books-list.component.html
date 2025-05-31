@@ -1,31 +1,53 @@
 <div class="books-container">
+  <!-- Индикатор загрузки -->
+  <div class="loading-container" *ngIf="isLoading">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <!-- Сообщение об ошибке -->
+  <div class="error-message" *ngIf="error">
+    {{ error }}
+  </div>
+
   <!-- Сетка карточек книг -->
-  <div class="books-grid">
+  <div class="books-grid" *ngIf="!isLoading && !error">
     <mat-card class="book-card" *ngFor="let book of books">
       <!-- Обложка книги -->
-      <img mat-card-image [src]="book.thumbnail" [alt]="book.title" class="book-cover">
+      <img mat-card-image [src]="getBookCover(book)" [alt]="book.volumeInfo.title" class="book-cover">
       
       <mat-card-header>
-        <mat-card-title>{{ book.title }}</mat-card-title>
-        <mat-card-subtitle>{{ book.author }}</mat-card-subtitle>
+        <mat-card-title>{{ book.volumeInfo.title }}</mat-card-title>
+        <mat-card-subtitle>
+          {{ book.volumeInfo.authors?.join(', ') }}
+        </mat-card-subtitle>
       </mat-card-header>
 
       <mat-card-content>
-
         <p [class.truncated]="!book.showFullDescription">
-          {{ book.description }}
+          {{ book.volumeInfo.description }}
         </p>
-        <button mat-button color="primary" (click)="toggleDescription(book)">
+        <button mat-button color="primary" (click)="toggleDescription(book)" *ngIf="book.volumeInfo.description">
           {{ book.showFullDescription ? 'Свернуть' : 'Читать далее' }}
         </button>
+
+        <!-- Рейтинг книги -->
+        <div class="book-rating" *ngIf="book.volumeInfo.averageRating">
+          <span class="rating-value">{{ book.volumeInfo.averageRating }}/5</span>
+          <span class="rating-count">({{ book.volumeInfo.ratingsCount }} оценок)</span>
+        </div>
       </mat-card-content>
 
       <mat-card-actions>
         <button mat-button color="primary" (click)="addToFavorites(book)">
-          <mat-icon>favorite_border</mat-icon>
-          Добавить в избранное
+          <mat-icon>{{ book.isFavorite ? 'favorite' : 'favorite_border' }}</mat-icon>
+          {{ book.isFavorite ? 'В избранном' : 'Добавить в избранное' }}
         </button>
       </mat-card-actions>
     </mat-card>
+  </div>
+
+  <!-- Сообщение, если книги не найдены -->
+  <div class="no-books-message" *ngIf="!isLoading && !error && books.length === 0">
+    Книги не найдены
   </div>
 </div> 

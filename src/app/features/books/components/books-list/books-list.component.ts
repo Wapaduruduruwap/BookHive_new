@@ -3,15 +3,11 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-
-// Временный интерфейс для тестовых данных
-interface TestBook {
-  title: string;
-  author: string;
-  description: string;
-  thumbnail: string;
-  showFullDescription: boolean;
-}
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { BooksService } from '../../services/books.service';
+import { Book } from '../../models/book.interface';
+import { catchError, finalize } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-books-list',
@@ -22,34 +18,88 @@ interface TestBook {
     CommonModule,
     MatCardModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatProgressSpinnerModule
   ]
 })
 export class BooksListComponent implements OnInit {
-  // Временные данные для тестирования отображения
-  books: TestBook[] = [
-    {
-      title: 'Тестовая книга',
-      author: 'Автор Тестович',
-      description: 'Описание тестовой книги... '.repeat(10), // Делаем длинное описание для теста
-      thumbnail: 'https://via.placeholder.com/128x192',
-      showFullDescription: false
-    }
-  ];
+  books: Book[] = [];
+  isLoading = false;
+  error: string | null = null;
 
-  constructor() { }
+  constructor(private booksService: BooksService) { }
 
   ngOnInit(): void {
+    this.loadPopularBooks();
   }
 
-  //Переключает отображение полного описания книги
-  toggleDescription(book: TestBook): void {
+  // Загрузка популярных книг при инициализации
+  loadPopularBooks(): void {
+    this.isLoading = true;
+    this.error = null;
+
+    this.booksService.getPopularBooks()
+      .pipe(
+        catchError(error => {
+          this.error = 'Произошла ошибка при загрузке книг. Пожалуйста, попробуйте позже.';
+          return of([]);
+        }),
+        finalize(() => {
+          this.isLoading = false;
+        })
+      )
+      .subscribe(books => {
+        this.books = books.map(book => ({
+          ...book,
+          showFullDescription: false,
+          isFavorite: false
+        }));
+      });
+  }
+
+  // Поиск книг по запросу
+  searchBooks(query: string): void {
+    if (!query.trim()) {
+      this.loadPopularBooks();
+      return;
+    }
+
+    this.isLoading = true;
+    this.error = null;
+
+    this.booksService.searchBooks(query)
+      .pipe(
+        catchError(error => {
+          this.error = 'Произошла ошибка при поиске книг. Пожалуйста, попробуйте позже.';
+          return of([]);
+        }),
+        finalize(() => {
+          this.isLoading = false;
+        })
+      )
+      .subscribe(books => {
+        this.books = books.map(book => ({
+          ...book,
+          showFullDescription: false,
+          isFavorite: false
+        }));
+      });
+  }
+
+  // Переключение отображения полного описания книги
+  toggleDescription(book: Book): void {
     book.showFullDescription = !book.showFullDescription;
   }
 
-  // Метод для добавления книги в избранное
-  addToFavorites(book: TestBook): void {
-    // Здесь будет логика добавления в избранное
-    console.log('Добавлено в избранное:', book);
+  // Добавление книги в избранное
+  addToFavorites(book: Book): void {
+    book.isFavorite = !book.isFavorite;
+    // Здесь можно добавить логику сохранения в localStorage или на сервере
+    console.log(book.isFavorite ? 'Добавлено в избранное:' : 'Удалено из избранного:', book);
+  }
+
+  // Получение URL обложки книги
+  getBookCover(book: Book): string {
+    return book.volumeInfo.imageLinks?.thumbnail || 'assets/images/book-placeholder.png';
   }
 } 
