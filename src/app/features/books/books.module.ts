@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { BooksListComponent } from './components/books-list/books-list.component';
 
-// Определяем маршруты для модуля книг
 const routes: Routes = [
   {
     path: '',
@@ -17,11 +17,12 @@ const routes: Routes = [
 @NgModule({
   imports: [
     CommonModule,
+    HttpClientModule,
     RouterModule.forChild(routes),
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    BooksListComponent // Добавляем компонент в imports вместо declarations
+    BooksListComponent
   ]
 })
 export class BooksModule { } 
