@@ -4,6 +4,15 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
+// Временный интерфейс для тестовых данных
+interface TestBook {
+  title: string;
+  author: string;
+  description: string;
+  thumbnail: string;
+  showFullDescription: boolean;
+}
+
 @Component({
   selector: 'app-books-list',
   templateUrl: './books-list.component.html',
@@ -17,12 +26,14 @@ import { MatIconModule } from '@angular/material/icon';
   ]
 })
 export class BooksListComponent implements OnInit {
-  books = [
+  // Временные данные для тестирования отображения
+  books: TestBook[] = [
     {
       title: 'Тестовая книга',
       author: 'Автор Тестович',
-      description: 'Описание тестовой книги...',
-      thumbnail: 'https://via.placeholder.com/128x192'
+      description: 'Описание тестовой книги... '.repeat(10), // Делаем длинное описание для теста
+      thumbnail: 'https://via.placeholder.com/128x192',
+      showFullDescription: false
     }
   ];
 
@@ -31,11 +42,14 @@ export class BooksListComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  toggleDescription(book: any): void {
+  //Переключает отображение полного описания книги
+  toggleDescription(book: TestBook): void {
     book.showFullDescription = !book.showFullDescription;
   }
 
-  addToFavorites(book: any): void {
+  // Метод для добавления книги в избранное
+  addToFavorites(book: TestBook): void {
+    // Здесь будет логика добавления в избранное
     console.log('Добавлено в избранное:', book);
   }
 } 
