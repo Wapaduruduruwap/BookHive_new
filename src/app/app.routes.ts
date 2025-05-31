@@ -10,5 +10,9 @@ export const routes: Routes = [
   {
     path: 'profile',
     component: ProfileComponent
+  },
+  {
+    path: 'books',
+    loadChildren: () => import('./features/books/books.module').then(m => m.BooksModule)
   }
 ];
