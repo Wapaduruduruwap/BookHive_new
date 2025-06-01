@@ -24,6 +24,10 @@ import { CommonModule } from '@angular/common';
             <mat-icon>library_books</mat-icon>
             Книги
           </a>
+          <a mat-button routerLink="/reviews" routerLinkActive="active">
+            <mat-icon>rate_review</mat-icon>
+            Мои рецензии
+          </a>
           <a mat-button routerLink="/profile" routerLinkActive="active">
             <mat-icon>person</mat-icon>
             Профиль

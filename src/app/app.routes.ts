@@ -14,5 +14,9 @@ export const routes: Routes = [
   {
     path: 'books',
     loadChildren: () => import('./features/books/books.module').then(m => m.BooksModule)
+  },
+  {
+    path: 'reviews',
+    loadChildren: () => import('./features/reviews/reviews.routes').then(m => m.REVIEWS_ROUTES)
   }
 ];
