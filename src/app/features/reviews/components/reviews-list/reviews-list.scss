@@ -15,13 +15,41 @@
   }
 
   .reviews-list {
-    min-height: 200px;
+    display: grid;
+    gap: 16px;
     
     .empty-state {
       text-align: center;
       color: rgba(0, 0, 0, 0.54);
       font-size: 16px;
       margin-top: 48px;
+    }
+
+    .review-card {
+      .rating {
+        margin: 12px 0;
+        
+        .star {
+          &.filled {
+            color: #ffd740;
+          }
+          
+          &.empty {
+            color: rgba(0, 0, 0, 0.12);
+          }
+        }
+      }
+
+      .review-text {
+        margin: 16px 0;
+        white-space: pre-line;
+      }
+
+      .review-date {
+        color: rgba(0, 0, 0, 0.54);
+        font-size: 14px;
+        margin: 0;
+      }
     }
   }
 }

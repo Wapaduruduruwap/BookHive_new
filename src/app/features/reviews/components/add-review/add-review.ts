@@ -6,6 +6,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
+import { ReviewsService } from '../../services/reviews.service';
 
 @Component({
   selector: 'app-add-review',
@@ -24,12 +26,18 @@ import { RouterModule } from '@angular/router';
 })
 export class AddReviewComponent implements OnInit {
   reviewForm: FormGroup;
+  stars: number[] = [1, 2, 3, 4, 5];
+  hoveredRating: number | null = null;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private reviewsService: ReviewsService
+  ) {
     this.reviewForm = this.fb.group({
       bookTitle: ['', Validators.required],
       author: ['', Validators.required],
-      rating: [0, [Validators.required, Validators.min(1), Validators.max(5)]],
+      rating: [null, [Validators.required, Validators.min(1), Validators.max(5)]],
       text: ['', Validators.required]
     });
   }
@@ -38,12 +46,40 @@ export class AddReviewComponent implements OnInit {
 
   setRating(rating: number): void {
     this.reviewForm.patchValue({ rating });
+    this.reviewForm.get('rating')?.markAsTouched();
+  }
+
+  isStarActive(star: number): boolean {
+    if (this.hoveredRating !== null) {
+      return star <= this.hoveredRating;
+    }
+    const rating = this.reviewForm.get('rating')?.value || 0;
+    return star <= rating;
+  }
+
+  onStarHover(star: number): void {
+    this.hoveredRating = star;
+  }
+
+  onStarLeave(): void {
+    this.hoveredRating = null;
   }
 
   onSubmit(): void {
     if (this.reviewForm.valid) {
-      console.log(this.reviewForm.value);
-      // TODO: Добавить сохранение рецензии
+      this.reviewsService.addReview(this.reviewForm.value);
+      this.router.navigate(['/reviews']);
+    } else {
+      this.markFormGroupTouched(this.reviewForm);
     }
+  }
+
+  private markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
   }
 }

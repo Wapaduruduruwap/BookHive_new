@@ -7,7 +7,7 @@
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Название книги</mat-label>
       <input matInput placeholder="Введите название книги" formControlName="bookTitle" required>
-      <mat-error *ngIf="reviewForm.get('bookTitle')?.hasError('required')">
+      <mat-error *ngIf="reviewForm.get('bookTitle')?.hasError('required') && reviewForm.get('bookTitle')?.touched">
         Название книги обязательно
       </mat-error>
     </mat-form-field>
@@ -15,7 +15,7 @@
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Автор</mat-label>
       <input matInput placeholder="Введите имя автора" formControlName="author" required>
-      <mat-error *ngIf="reviewForm.get('author')?.hasError('required')">
+      <mat-error *ngIf="reviewForm.get('author')?.hasError('required') && reviewForm.get('author')?.touched">
         Имя автора обязательно
       </mat-error>
     </mat-form-field>
@@ -23,11 +23,18 @@
     <div class="rating-field">
       <label>Оценка</label>
       <div class="stars">
-        <button type="button" mat-icon-button *ngFor="let star of [1,2,3,4,5]" 
-                (click)="setRating(star)" 
-                [color]="star <= (reviewForm.get('rating')?.value || 0) ? 'accent' : ''">
+        <button type="button" 
+                mat-icon-button 
+                *ngFor="let star of stars" 
+                (click)="setRating(star)"
+                (mouseenter)="onStarHover(star)"
+                (mouseleave)="onStarLeave()"
+                [color]="isStarActive(star) ? 'accent' : ''">
           <mat-icon>star</mat-icon>
         </button>
+      </div>
+      <div class="rating-value" *ngIf="hoveredRating || reviewForm.get('rating')?.value">
+        {{ hoveredRating || reviewForm.get('rating')?.value }} из 5 звёзд
       </div>
       <mat-error *ngIf="reviewForm.get('rating')?.hasError('required') && reviewForm.get('rating')?.touched">
         Оценка обязательна
@@ -41,14 +48,14 @@
                 formControlName="text" 
                 required 
                 rows="6"></textarea>
-      <mat-error *ngIf="reviewForm.get('text')?.hasError('required')">
+      <mat-error *ngIf="reviewForm.get('text')?.hasError('required') && reviewForm.get('text')?.touched">
         Текст рецензии обязателен
       </mat-error>
     </mat-form-field>
 
     <div class="form-actions">
       <a mat-button routerLink="/reviews">Отмена</a>
-      <button mat-raised-button color="primary" type="submit" [disabled]="!reviewForm.valid">
+      <button mat-raised-button color="primary" type="submit">
         Опубликовать
       </button>
     </div>

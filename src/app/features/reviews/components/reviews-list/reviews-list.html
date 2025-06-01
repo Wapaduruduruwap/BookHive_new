@@ -7,10 +7,25 @@
     </a>
   </div>
 
-  <!-- Здесь будет список рецензий -->
   <div class="reviews-list">
-    <p class="empty-state" *ngIf="true">
+    <p class="empty-state" *ngIf="reviews.length === 0">
       У вас пока нет рецензий. Нажмите "Добавить рецензию", чтобы создать первую!
     </p>
+
+    <mat-card *ngFor="let review of reviews" class="review-card">
+      <mat-card-header>
+        <mat-card-title>{{ review.bookTitle }}</mat-card-title>
+        <mat-card-subtitle>{{ review.author }}</mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="rating">
+          <mat-icon class="star filled" *ngFor="let star of getStarsArray(review.rating)">star</mat-icon>
+          <mat-icon class="star empty" *ngFor="let star of getEmptyStarsArray(review.rating)">star</mat-icon>
+        </div>
+        <p class="review-text">{{ review.text }}</p>
+        <p class="review-date">{{ review.createdAt | date:'dd.MM.yyyy' }}</p>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>

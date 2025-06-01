@@ -32,6 +32,24 @@
       .stars {
         display: flex;
         gap: 4px;
+
+        button {
+          mat-icon {
+            font-size: 24px;
+            width: 24px;
+            height: 24px;
+          }
+
+          &[color="accent"] mat-icon {
+            color: #ffd740;
+          }
+        }
+      }
+
+      .rating-value {
+        margin-top: 4px;
+        font-size: 14px;
+        color: rgba(0, 0, 0, 0.6);
       }
 
       mat-error {
