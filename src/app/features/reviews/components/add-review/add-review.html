@@ -1,1 +1,56 @@
-<p>add-review works!</p>
+<div class="add-review-container">
+  <div class="header">
+    <h1>Добавить рецензию</h1>
+  </div>
+
+  <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()" class="review-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Название книги</mat-label>
+      <input matInput placeholder="Введите название книги" formControlName="bookTitle" required>
+      <mat-error *ngIf="reviewForm.get('bookTitle')?.hasError('required')">
+        Название книги обязательно
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Автор</mat-label>
+      <input matInput placeholder="Введите имя автора" formControlName="author" required>
+      <mat-error *ngIf="reviewForm.get('author')?.hasError('required')">
+        Имя автора обязательно
+      </mat-error>
+    </mat-form-field>
+
+    <div class="rating-field">
+      <label>Оценка</label>
+      <div class="stars">
+        <button type="button" mat-icon-button *ngFor="let star of [1,2,3,4,5]" 
+                (click)="setRating(star)" 
+                [color]="star <= (reviewForm.get('rating')?.value || 0) ? 'accent' : ''">
+          <mat-icon>star</mat-icon>
+        </button>
+      </div>
+      <mat-error *ngIf="reviewForm.get('rating')?.hasError('required') && reviewForm.get('rating')?.touched">
+        Оценка обязательна
+      </mat-error>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Текст рецензии</mat-label>
+      <textarea matInput 
+                placeholder="Напишите вашу рецензию" 
+                formControlName="text" 
+                required 
+                rows="6"></textarea>
+      <mat-error *ngIf="reviewForm.get('text')?.hasError('required')">
+        Текст рецензии обязателен
+      </mat-error>
+    </mat-form-field>
+
+    <div class="form-actions">
+      <a mat-button routerLink="/reviews">Отмена</a>
+      <button mat-raised-button color="primary" type="submit" [disabled]="!reviewForm.valid">
+        Опубликовать
+      </button>
+    </div>
+  </form>
+</div>

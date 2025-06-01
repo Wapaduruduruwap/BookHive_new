@@ -1,1 +1,16 @@
-<p>reviews-list works!</p>
+<div class="reviews-container">
+  <div class="header">
+    <h1>Мои рецензии</h1>
+    <a mat-raised-button color="primary" routerLink="add">
+      <mat-icon>add</mat-icon>
+      Добавить рецензию
+    </a>
+  </div>
+
+  <!-- Здесь будет список рецензий -->
+  <div class="reviews-list">
+    <p class="empty-state" *ngIf="true">
+      У вас пока нет рецензий. Нажмите "Добавить рецензию", чтобы создать первую!
+    </p>
+  </div>
+</div>
