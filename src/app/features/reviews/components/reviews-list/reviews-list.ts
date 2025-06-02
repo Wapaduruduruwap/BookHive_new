@@ -4,8 +4,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { ReviewsService } from '../../services/reviews.service';
 import { Review } from '../../models/review.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-reviews-list',
@@ -15,7 +17,8 @@ import { Review } from '../../models/review.interface';
     MatButtonModule,
     MatIconModule,
     RouterModule,
-    MatCardModule
+    MatCardModule,
+    MatDialogModule
   ],
   templateUrl: './reviews-list.html',
   styleUrls: ['./reviews-list.scss']
@@ -23,8 +26,13 @@ import { Review } from '../../models/review.interface';
 export class ReviewsListComponent implements OnInit {
   reviews: Review[] = [];
 
-  constructor(private reviewsService: ReviewsService) {}
+  constructor(
+    private reviewsService: ReviewsService,
+    private dialog: MatDialog,
+    private router: Router
+  ) {}
 
+  // При инициализации компонента подписываемся на обновления списка рецензий
   ngOnInit(): void {
     this.reviewsService.getReviews().subscribe(reviews => {
       this.reviews = reviews;
@@ -37,5 +45,16 @@ export class ReviewsListComponent implements OnInit {
 
   getEmptyStarsArray(rating: number): number[] {
     return Array(5 - rating).fill(0);
+  }
+
+  editReview(review: Review): void {
+    this.router.navigate(['/reviews/add'], { state: { review } });
+  }
+
+  deleteReview(review: Review): void {
+    const confirmDelete = window.confirm('Вы уверены, что хотите удалить эту рецензию?');
+    if (confirmDelete) {
+      this.reviewsService.deleteReview(review.id);
+    }
   }
 }

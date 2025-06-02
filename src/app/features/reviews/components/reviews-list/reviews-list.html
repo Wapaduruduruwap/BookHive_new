@@ -16,12 +16,21 @@
       <mat-card-header>
         <mat-card-title>{{ review.bookTitle }}</mat-card-title>
         <mat-card-subtitle>{{ review.author }}</mat-card-subtitle>
+        <div class="card-actions">
+          <button mat-icon-button (click)="editReview(review)" color="primary">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="deleteReview(review)" color="warn">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
       </mat-card-header>
       
       <mat-card-content>
         <div class="rating">
-          <mat-icon class="star filled" *ngFor="let star of getStarsArray(review.rating)">star</mat-icon>
-          <mat-icon class="star empty" *ngFor="let star of getEmptyStarsArray(review.rating)">star</mat-icon>
+          <mat-icon class="star" [class.filled]="star <= review.rating" *ngFor="let star of [1,2,3,4,5]">
+            star
+          </mat-icon>
         </div>
         <p class="review-text">{{ review.text }}</p>
         <p class="review-date">{{ review.createdAt | date:'dd.MM.yyyy' }}</p>

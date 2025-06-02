@@ -1,6 +1,6 @@
 <div class="add-review-container">
   <div class="header">
-    <h1>Добавить рецензию</h1>
+    <h1>{{ isEditMode ? 'Редактировать рецензию' : 'Добавить рецензию' }}</h1>
   </div>
 
   <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()" class="review-form">
@@ -56,7 +56,7 @@
     <div class="form-actions">
       <a mat-button routerLink="/reviews">Отмена</a>
       <button mat-raised-button color="primary" type="submit">
-        Опубликовать
+        {{ isEditMode ? 'Сохранить' : 'Опубликовать' }}
       </button>
     </div>
   </form>

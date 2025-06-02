@@ -28,6 +28,8 @@ export class AddReviewComponent implements OnInit {
   reviewForm: FormGroup;
   stars: number[] = [1, 2, 3, 4, 5];
   hoveredRating: number | null = null;
+  isEditMode = false;
+  editingReviewId: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -40,12 +42,27 @@ export class AddReviewComponent implements OnInit {
       rating: [null, [Validators.required, Validators.min(1), Validators.max(5)]],
       text: ['', Validators.required]
     });
+
+    const navigation = this.router.getCurrentNavigation();
+    const review = navigation?.extras?.state?.['review'];
+    
+    if (review) {
+      this.isEditMode = true;
+      this.editingReviewId = review.id;
+      this.reviewForm.patchValue(review);
+    }
   }
 
   ngOnInit(): void {}
 
   setRating(rating: number): void {
-    this.reviewForm.patchValue({ rating });
+    const currentRating = this.reviewForm.get('rating')?.value;
+    // Если кликнули по текущему рейтингу, сбрасываем его
+    if (currentRating === rating) {
+      this.reviewForm.patchValue({ rating: null });
+    } else {
+      this.reviewForm.patchValue({ rating });
+    }
     this.reviewForm.get('rating')?.markAsTouched();
   }
 
@@ -53,8 +70,8 @@ export class AddReviewComponent implements OnInit {
     if (this.hoveredRating !== null) {
       return star <= this.hoveredRating;
     }
-    const rating = this.reviewForm.get('rating')?.value || 0;
-    return star <= rating;
+    const rating = this.reviewForm.get('rating')?.value;
+    return rating !== null && star <= rating;
   }
 
   onStarHover(star: number): void {
@@ -67,7 +84,11 @@ export class AddReviewComponent implements OnInit {
 
   onSubmit(): void {
     if (this.reviewForm.valid) {
-      this.reviewsService.addReview(this.reviewForm.value);
+      if (this.isEditMode && this.editingReviewId) {
+        this.reviewsService.updateReview(this.editingReviewId, this.reviewForm.value);
+      } else {
+        this.reviewsService.addReview(this.reviewForm.value);
+      }
       this.router.navigate(['/reviews']);
     } else {
       this.markFormGroupTouched(this.reviewForm);
