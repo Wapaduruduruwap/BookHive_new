@@ -1,59 +1,50 @@
 # BookHive
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.0.
+## Описание проекта
 
-## Development server
+BookHive - это веб-приложение для книголюбов, которое позволяет пользователям искать книги и делиться своими рецензиями. Платформа предоставляет удобный интерфейс для создания, редактирования и управления рецензиями на книги.
 
-To start a local development server, run:
+Основные возможности:
+- Поиск книг с использованием Google Books API
+- Создание и редактирование рецензий на книги
+- Система оценивания книг (5-звездочный рейтинг)
+- Управление личными рецензиями
+- Адаптивный дизайн для мобильных устройств
 
+## Инструкции по запуску
+
+1. Клонируйте репозиторий:
+```bash
+git clone https://github.com/your-username/BookHive.git
+cd BookHive
+```
+
+2. Установите зависимости:
+```bash
+npm install
+```
+
+3. Запустите приложение:
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+4. Откройте браузер и перейдите по адресу:
+```
+http://localhost:4200
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Технологии и библиотеки
 
-```bash
-ng generate --help
-```
+- **Frontend Framework**: Angular 17
+- **UI Components**: Angular Material
+- **Стилизация**: SCSS
+- **Хранение данных**: LocalStorage
+- **API интеграция**: Google Books API
+- **Управление состоянием**: RxJS
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+### Основные зависимости
+- Node.js (версия 18 или выше)
+- Angular CLI (версия 17)
+- Angular Material
+- RxJS
